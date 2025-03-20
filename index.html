@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat em Tempo Real</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
+        ul { list-style: none; padding: 0; max-width: 400px; margin: 20px auto; }
+        li {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            width: fit-content;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #d1e7dd; /* Verde claro */
+            color: #155724; /* Verde escuro */
+            text-align: right;
+            margin-left: auto;
+        }
+        .server-message {
+            background-color: #f8d7da; /* Vermelho claro */
+            color: #721c24; /* Vermelho escuro */
+            text-align: left;
+            margin-right: auto;
+        }
+        #msg { padding: 10px; width: 60%; }
+        button { padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Chat em Tempo Real</h2>
+    <ul id="messages"></ul>
+    <input id="msg" autocomplete="off" placeholder="Digite sua mensagem..." />
+    <button onclick="sendMessage()">Enviar</button>
+
+    <script>
+        const socket = io();
+
+        function sendMessage() {
+            const input = document.getElementById("msg");
+            if (input.value.trim() === "") return;
+
+            const message = "Você: " + input.value;
+            socket.emit("chat message", message);
+            input.value = "";
+        }
+
+        socket.on("chat message", (msg) => {
+            const li = document.createElement("li");
+
+            if (msg.startsWith("Você: ")) {
+                li.classList.add("user-message");
+            } else {
+                li.classList.add("server-message");
+            }
+
+            li.textContent = msg;
+            document.getElementById("messages").appendChild(li);
+        });
+    </script>
+</body>
+</html>
