@@ -52,6 +52,12 @@ Veja mensagens de outros participantes em tempo real.
 
 🔄 Abra um Pull Request
 
+---
+
+# Imagens do Chat Online com WebSocket
+
+![Print do projeto](imagens/imagem_01.png)
+
 # 📜 Licença
 
 Este projeto está licenciado sob a MIT License.
