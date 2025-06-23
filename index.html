@@ -3,63 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat em Tempo Real</title>
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <title>Chat Local</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background: #f8f9fa; }
-        ul { list-style: none; padding: 0; max-width: 400px; margin: 20px auto; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chat-container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+            width: 100%;
+            max-width: 420px;
+            padding: 24px 18px 18px 18px;
+            display: flex;
+            flex-direction: column;
+        }
+        h2 {
+            margin: 0 0 16px 0;
+            color: #007bff;
+            font-weight: 600;
+        }
+        #messages {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 16px 0;
+            max-height: 320px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
         li {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            width: fit-content;
+            padding: 10px 16px;
+            border-radius: 18px;
             max-width: 80%;
+            word-break: break-word;
+            font-size: 1rem;
         }
         .user-message {
-            background-color: #d1e7dd; /* Verde claro */
-            color: #155724; /* Verde escuro */
-            text-align: right;
-            margin-left: auto;
+            background: #d1e7dd;
+            color: #155724;
+            align-self: flex-end;
         }
         .server-message {
-            background-color: #f8d7da; /* Vermelho claro */
-            color: #721c24; /* Vermelho escuro */
-            text-align: left;
-            margin-right: auto;
+            background: #f8d7da;
+            color: #721c24;
+            align-self: flex-start;
         }
-        #msg { padding: 10px; width: 60%; }
-        button { padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+        .input-area {
+            display: flex;
+            gap: 8px;
+        }
+        #msg {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid #b6d4fe;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+        #msg:focus {
+            border: 1.5px solid #007bff;
+        }
+        button {
+            padding: 10px 18px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
-    <h2>Chat em Tempo Real</h2>
-    <ul id="messages"></ul>
-    <input id="msg" autocomplete="off" placeholder="Digite sua mensagem..." />
-    <button onclick="sendMessage()">Enviar</button>
-
+    <div class="chat-container">
+        <h2>Chat Local</h2>
+        <ul id="messages"></ul>
+        <div class="input-area">
+            <input id="msg" autocomplete="off" placeholder="Digite sua mensagem..." />
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
     <script>
-        const socket = io();
-
         function sendMessage() {
             const input = document.getElementById("msg");
             if (input.value.trim() === "") return;
 
-            const message = "Você: " + input.value;
-            socket.emit("chat message", message);
+            const li = document.createElement("li");
+            li.classList.add("user-message");
+            li.textContent = "Você: " + input.value;
+            document.getElementById("messages").appendChild(li);
+
+            // Rolagem automática para a última mensagem
+            document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
+
+            setTimeout(() => {
+                const liServer = document.createElement("li");
+                liServer.classList.add("server-message");
+                liServer.textContent = "Servidor: Recebi sua mensagem!";
+                document.getElementById("messages").appendChild(liServer);
+                document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
+            }, 500);
+
             input.value = "";
+            input.focus();
         }
 
-        socket.on("chat message", (msg) => {
-            const li = document.createElement("li");
-
-            if (msg.startsWith("Você: ")) {
-                li.classList.add("user-message");
-            } else {
-                li.classList.add("server-message");
-            }
-
-            li.textContent = msg;
-            document.getElementById("messages").appendChild(li);
+        // Permite enviar com Enter
+        document.getElementById("msg").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") sendMessage();
         });
     </script>
 </body>
