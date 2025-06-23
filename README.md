@@ -56,7 +56,17 @@ Veja mensagens de outros participantes em tempo real.
 
 # Imagens do Chat Online com WebSocket
 
-![Print do projeto](imagens/imagem_01.png)
+![Print do projeto](imagens/imagem_01.png) 
+
+---
+
+![Print do projeto](imagens/imagem_02.png) 
+
+---
+
+![Print do projeto](imagens/imagem_03.png) 
+
+
 
 # 📜 Licença
 
